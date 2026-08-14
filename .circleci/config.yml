@@ -2,8 +2,8 @@ version: 2.1
 
 jobs:
   build:
-    machine:
-      image: ubuntu-2204:current # Tam yetkili VM imajı
+    docker:
+      image: ubuntu:22.04 # Tam yetkili VM imajı
     resource_class: arm.2xlarge
     steps:
       - checkout

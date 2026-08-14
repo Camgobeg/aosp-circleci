@@ -1,7 +1,7 @@
 version: 2.1
 
 jobs:
-  build:
+  build-arm-native:
     docker:
       image: ubuntu:22.04 # Tam yetkili VM imajı
     resource_class: arm.2xlarge

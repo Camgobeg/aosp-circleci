@@ -2,7 +2,7 @@ format_version: "11"
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 
 workflows:
-  build_workflow:
+  primary:
     meta:
       bitrise.io:
         machine_type_id: elite   # 8 vCPU, 32 GB RAM gücündeki elite (Linux Large) makineyi tahsis eder

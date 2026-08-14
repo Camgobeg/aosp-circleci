@@ -3,18 +3,44 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: cimg/base:current
-    resource_class: 2xlarge
+      - image: ubuntu:22.04
+    resource_class: large
     steps:
       - checkout
       - run:
-          name: Sistem Bilgisi ve Test
+          name: "Install Tools and make swap & init and build android"
           command: |
-            echo "AOSP Build ortamı hazırlanıyor..."
+            echo "AOSP Build ortami hazirlaniyor..."
             uname -a
             df -h
             free -h
             lscpu
+            apt update && apt install -y sudo git wget curl
+            sudo fallocate -l 64G /swapfile
+            sudo chmod 600 /swapfile
+            sudo mkswap /swapfile
+            sudo swapon /swapfile
+            free -h
+            git clone https://github.com/akhilnarang/scripts
+            ./scripts/setup/android_build_env.sh
+            sudo apt-get install -y wget openjdk-8-jdk git ccache automake lzop bison gperf build-essential zip curl zlib1g-dev g++-multilib python3-networkx libxml2-utils bzip2 libbz2-dev libbz2-1.0 libghc-bzlib-dev squashfs-tools pngcrush schedtool dpkg-dev liblz4-tool make optipng maven libssl-dev bc bsdmainutils gettext python3-mako libelf-dev sbsigntool dosfstools mtools efitools python3-pystache git-lfs python-is-python3 flex clang libncurses5 fakeroot ncurses-dev xz-utils cryptsetup-bin apt-transport-https ca-certificates curl lsb-release rsync vim python-six kmod glslang-tools software-properties-common cpio python3-pip ninja-build   cutils cmake pkg-config xorriso mtools libjson-c-dev file
+            sudo pip3 install meson==1.8.3 mako==1.1.0 dataclasses pycryptodome ply==3.11 
+            repo init --depth=1 -u https://github.com/edge-aosp-bsp/manifest.git  
+            repo sync -c --force-sync -j36
+            repo forall -c git lfs pull
+            repo sync -c --force-sync -j8
+            source build/envsetup.sh
+            lunch caas-userdebug
+            rm -rf device/intel/project-celadon/caas/
+            git clone https://github.com/Camgobeg/device-androidia.git
+            mv device-androidia/caas device/intel/project-celadon/caas/
+            rm -rf device-androidia
+            source build/envsetup.sh
+            lunch caas-userdebug
+            echo "AOSP derleniyor..."
+            make flashfiles BASE_LINUX_INTEL_LTS2024_KERNEL=true -j36
+
+
 
 workflows:
   version: 2

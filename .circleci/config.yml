@@ -1,0 +1,22 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: ubuntu:22.04
+    resource_class: xlarge
+    steps:
+      - checkout
+      - run:
+          name: Sistem Bilgisi ve Test
+          command: |
+            echo "AOSP Build ortamı hazırlanıyor..."
+            uname -a
+            df -h
+            free -h
+
+workflows:
+  version: 2
+  build_workflow:
+    jobs:
+      - build
